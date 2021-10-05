@@ -25,3 +25,7 @@ echo ""
 # commands to display a title
 # commands to make a list of the 12 biggest files
 # sort/format whatever to display the list properly
+
+echo "12 largest files"
+echo "================"
+find / -type f -executable -ls 2>/dev/null | sort -nr -k 6 | head -n 12
