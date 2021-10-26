@@ -32,7 +32,7 @@ while [  "$1" ]; do  #initiate while loop
 
 
 done
-[ -v verbose ] || interface="$2"
+[ -v verbose ] || interface="interFace"
 
 # TASK 2: Dynamically identify the list of interface names for the computer running the script, and use a for loop to generate the report for every interface except loopback
 
