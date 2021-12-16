@@ -1,14 +1,18 @@
 ﻿function systemhardware {
-    write "======System Hardware Description======"
+    write "System Hardware Description"
     Get-CimInstance win32_computersystem | 
     fl Model, Name, Domain, Manufacturer, TotalPhysicalMemory
 }
+systemhardware
+
 function OperatingSystem {
-    Write-Output "========== OPERATING SYSTEM INFORMATION =========="
+    Write-Output "OPERATING SYSTEM INFORMATION"
     Get-WmiObject win32_operatingsystem | Select-Object Caption, Version, OSArchitecture | Format-List
 }
+OperatingSystem
+
 function processorDescription {
-    Write-Output "========== PROCESSOR DESCRIPTION =========="
+    Write "PROCESSOR DESCRIPTION"
     Get-WmiObject win32_processor | 
     Select-Object Name, NumberOfCores, CurrentClockSpeed, MaxClockSpeed,
     @{  n = "L1CacheSize"; 
@@ -34,8 +38,11 @@ function processorDescription {
             $outputData }
     } | fl
 }
+processorDescription
+
+
 function ramSummary {
-    Write-Output "========== RAM SUMMARY =========="
+    Write "RAM SUMMARY"
     $totalRam = 0
     Get-WmiObject win32_physicalmemory |
     ForEach-Object {
@@ -52,8 +59,11 @@ function ramSummary {
     ft Manufacturer, Description, "Size(GB)", Bank, Slot -AutoSize
     Write "Total RAM Capacity = $($totalRam/1gb) GB"
 }
+ramSummary
+
+
 function diskDrive {
-    Write-Output "========== DISK DRIVE INFORMATION =========="
+    Write "DISK DRIVE INFORMATION"
     $allDrives = Get-CIMInstance CIM_diskdrive | Where-Object DeviceID -ne $null
     foreach ($Disks in $allDrives) {
         $Partitions = $Disks | get-cimassociatedinstance -resultclassname CIM_diskpartition
@@ -73,16 +83,22 @@ function diskDrive {
         }
     }   
 }
+diskDrive
+
+
 function networkInformation {
-    Write-Output "========== NETWORK INFORMATION =========="
+    Write "NETWORK INFORMATION"
     get-ciminstance win32_networkadapterconfiguration | Where-Object { $_.ipenabled -eq 'True' } | 
     Select-Object Index, IPAddress, Description, ipsubnet, dnsdomain,
    
     DNSServerSearchOrder |
     ft -autosize Index, IPaddress, Description, ipsubnet, DNSdomain, DNSserversearchorder
 }
+networkInformation
+
+
 function graphicsInformation {
-    Write-Output "========== GRAPHICS INFORMATION =========="
+    Write "GRAPHICS INFORMATION"
     $controller = Get-WmiObject win32_videocontroller
     $controller = New-Object -TypeName psObject -Property @{
         Name             = $controller.Name
@@ -91,12 +107,4 @@ function graphicsInformation {
     } | fl Name, Description, ScreenResolution
     $controller
 }
-
-# Calling Functions one by one
-systemhardware
-OperatingSystem
-processorDescription
-ramSummary
-diskDrive
-networkInformation
 graphicsInformation
